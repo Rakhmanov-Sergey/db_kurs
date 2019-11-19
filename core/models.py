@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import Group
+from django.db import transaction
 
 # Create your models here.
 
@@ -8,9 +10,18 @@ class User(AbstractUser):
     TYPE_CHOICES = (('manager', 'Организатор мероприятия'), ('client', 'Заказчик'), ('editor', 'Музыкальный редактор'))
     type = models.CharField(max_length=20, blank=True, choices=TYPE_CHOICES)
 
-    def save(self, force_insert=False, force_update=False):
-        self.first_name = self.type
-        super(User, self).save(force_insert, force_update)
+    def save(self, *args, **kwargs):
+        self.is_staff = True
+
+        if self.type == 'client':
+            group = Group.objects.get(name='clients')
+        elif self.type == 'editor':
+            group = Group.objects.get(name='editors')
+        elif self.type == 'manager':
+            group = Group.objects.get(name='managers')
+            
+        super(User, self).save(*args, **kwargs)
+        self.groups.add(group)
 
 
 class Song(models.Model):

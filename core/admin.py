@@ -14,14 +14,6 @@ class UserUpdateForm(forms.ModelForm):
         model = User
         fields = ("username",)
 
-    def save(self, commit=True):
-        user = super(UserUpdateForm, self).save(commit=False)
-        password = self.cleaned_data["password"]
-        if password:
-            user.set_password(password)
-        if commit:
-            user.save()
-        return user
 
 
 class ClientForm(forms.ModelForm):
