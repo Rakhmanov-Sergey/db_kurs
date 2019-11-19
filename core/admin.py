@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import redirect
 
 
-from core.models import Song, Event, User, Client, Editor, Manager, Request
+from core.models import Song, Event, User, Client, Editor, Manager, Request, SongRights
 
 
 class UserUpdateForm(forms.ModelForm):
@@ -13,7 +13,6 @@ class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ("username",)
-
 
 
 class ClientForm(forms.ModelForm):
@@ -42,21 +41,39 @@ class ManagerForm(forms.ModelForm):
 
 @admin.register(Song)
 class SongAdmin(admin.ModelAdmin):
-    def get_form(self, request, obj=None, **kwargs):
-        form = super().get_form(request, obj, **kwargs)
-        # if request.user.is_authenticated():
-        is_client = (request.user.type == "client")
-        if is_client:
-            form.base_fields['name'].disabled = True
+    list_display = ['name', 'artist', 'has_rights']
+    search_fields = ['name', 'artist']
 
-        return form
-
-    pass
+    # def get_form(self, request, obj=None, **kwargs):
+    #     form = super().get_form(request, obj, **kwargs)
+    #     # if request.user.is_authenticated():
+    #     is_client = (request.user.type == "client")
+    #     if is_client:
+    #         form.base_fields['name'].disabled = True
+    #
+    #     return form
 
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    pass
+    list_display = ("date", "get_host")
+
+    def get_host(self, obj):
+        if obj.host is not None:
+            return "%s %s" % (obj.host.first_name, obj.host.last_name)
+        else:
+            return ""
+    get_host.admin_order_field = 'организатор'
+    get_host.short_description = 'Организатор'
+
+    fieldsets = (
+        (None, {'fields': ('date', 'songs', 'request')}),
+        (None, {'fields': ('host',), 'classes': ('hidden',)}),
+    )
+
+    def save_model(self, request, obj, form, change):
+        obj.host = request.user
+        super().save_model(request, obj, form, change)
 
 
 @admin.register(User)
@@ -92,6 +109,31 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(Client)
 class ClientAdmin(admin.ModelAdmin):
+    model = Client
+    list_display = ['get_first_name', 'get_last_name', 'get_email', 'get_username', 'number']
+    # list_filter = ('user_id__first_name', 'user_id__last_name', 'user_id__email', 'user_id__username', 'number')
+    search_fields = ['number']
+
+    def get_first_name(self, obj):
+        return obj.user_id.first_name
+    get_first_name.admin_order_field = 'имя'
+    get_first_name.short_description = 'Имя'
+
+    def get_last_name(self, obj):
+        return obj.user_id.last_name
+    get_last_name.admin_order_field = 'Фамилия'
+    get_last_name.short_description = 'Фамилия'
+
+    def get_username(self, obj):
+        return obj.user_id.username
+    get_username.admin_order_field = 'логин'
+    get_username.short_description = 'Логин'
+
+    def get_email(self, obj):
+        return obj.user_id.email
+    get_email.admin_order_field = 'Почта'
+    get_email.short_description = 'Почта'
+
     forms = ClientForm
     fieldsets = (
         (None, {'fields': ('number', 'card_number', 'address')}),
@@ -101,6 +143,31 @@ class ClientAdmin(admin.ModelAdmin):
 
 @admin.register(Editor)
 class EditorAdmin(admin.ModelAdmin):
+    model = Editor
+    list_display = ['get_first_name', 'get_last_name', 'get_email', 'get_username', 'staff_code']
+    # list_filter = ('user_id__first_name', 'user_id__last_name', 'user_id__email', 'staff_code')
+    search_fields = ['staff_code']
+
+    def get_first_name(self, obj):
+        return obj.user_id.first_name
+    get_first_name.admin_order_field = 'имя'
+    get_first_name.short_description = 'Имя'
+
+    def get_last_name(self, obj):
+        return obj.user_id.last_name
+    get_last_name.admin_order_field = 'Фамилия'
+    get_last_name.short_description = 'Фамилия'
+
+    def get_username(self, obj):
+        return obj.user_id.username
+    get_username.admin_order_field = 'логин'
+    get_username.short_description = 'Логин'
+
+    def get_email(self, obj):
+        return obj.user_id.email
+    get_email.admin_order_field = 'Почта'
+    get_email.short_description = 'Почта'
+
     forms = EditorForm
     fieldsets = (
         (None, {'fields': ('staff_code',)}),
@@ -110,6 +177,31 @@ class EditorAdmin(admin.ModelAdmin):
 
 @admin.register(Manager)
 class ManagerAdmin(admin.ModelAdmin):
+    model = Manager
+    list_display = ['get_first_name', 'get_last_name', 'get_email', 'get_username', 'staff_code']
+    # list_filter = ('user_id__first_name', 'user_id__last_name', 'user_id__email', 'staff_code')
+    search_fields = ['staff_code']
+
+    def get_first_name(self, obj):
+        return obj.user_id.first_name
+    get_first_name.admin_order_field = 'имя'
+    get_first_name.short_description = 'Имя'
+
+    def get_last_name(self, obj):
+        return obj.user_id.last_name
+    get_last_name.admin_order_field = 'Фамилия'
+    get_last_name.short_description = 'Фамилия'
+
+    def get_username(self, obj):
+        return obj.user_id.username
+    get_username.admin_order_field = 'логин'
+    get_username.short_description = 'Логин'
+
+    def get_email(self, obj):
+        return obj.user_id.email
+    get_email.admin_order_field = 'Почта'
+    get_email.short_description = 'Почта'
+
     forms = ManagerForm
     fieldsets = (
         (None, {'fields': ('staff_code',)}),
@@ -119,5 +211,10 @@ class ManagerAdmin(admin.ModelAdmin):
 
 @admin.register(Request)
 class RequestAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(SongRights)
+class SongRightsAdmin(admin.ModelAdmin):
     pass
 

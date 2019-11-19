@@ -19,72 +19,108 @@ class User(AbstractUser):
             group = Group.objects.get(name='editors')
         elif self.type == 'manager':
             group = Group.objects.get(name='managers')
-            
+
         super(User, self).save(*args, **kwargs)
         self.groups.add(group)
 
 
 class Song(models.Model):
-    name = models.CharField(max_length=20)
-    artist = models.CharField(max_length=20)
-    file_name = models.CharField(max_length=50)
+    name = models.CharField(max_length=20, verbose_name="Название")
+    artist = models.CharField(max_length=20, verbose_name="Исполнитель")
+    file_name = models.CharField(max_length=50, verbose_name="Название музыкального файла")
+
+    class Meta:
+        verbose_name = "музыкальную композицию"
+        verbose_name_plural = "музыкальные композиции"
+
+    def has_rights(self):
+        rights = SongRights.objects.filter(name=self.name, artist=self.artist, status="confirmed")
+        return len(rights) != 0
+
+    has_rights.boolean = True
+    has_rights.verbose_name = "Имеются права"
 
     def __str__(self):
-        return "Song %s for %s" % (self.id, list(map(lambda event: "Event#%s" % event.id, self.event_set.all())))
-
-
-class Event(models.Model):
-    date = models.DateField()
-    host = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-    songs = models.ManyToManyField(Song)
-
-    def __str__(self):
-        return "Event#%s" % self.id
+        return "%s - %s" % (self.artist, self.name)
 
 
 class SongRights(models.Model):
     SONG_RIGHTS_CHOICES = (('requested', 'Запрос отправлен'), ('processing', 'В обработке'), ('confirmed', 'Подтверждено'))
-    organization = models.CharField(max_length=50)
+    name = models.CharField(max_length=20, verbose_name="Название")
+    artist = models.CharField(max_length=20, verbose_name="Исполнитель")
+    organization = models.CharField(max_length=50, verbose_name="Организация")
     status = models.CharField(max_length=20, choices=SONG_RIGHTS_CHOICES)
-    song = models.OneToOneField(Song, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "права на композицию"
+        verbose_name_plural = "права на композицию"
 
     def __str__(self):
-        return "Song rights for song %s with state %s" % (self.song, self.status)
+        return "Права на композицию %s - %s" % (self.artist, self.name)
 
 
 class Client(models.Model):
-    number = models.CharField(max_length=20, blank=True)
+    number = models.CharField(max_length=20, blank=True, verbose_name="номер телефона")
     card_number = models.CharField(max_length=50, blank=True)
     address = models.TextField(blank=True)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    class Meta:
+        verbose_name = "заказчика"
+        verbose_name_plural = "заказчики"
+
     def __str__(self):
-        return "Client extension for user#%s" % self.user_id.username
+        return "Заказчик %s %s" % (self.user_id.first_name, self.user_id.last_name)
 
 
 class Editor(models.Model):
     staff_code = models.CharField(max_length=20, blank=True)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    class Meta:
+        verbose_name = "редактора"
+        verbose_name_plural = "редакторы"
+
     def __str__(self):
-        return "Editor extension for user#%s" % self.user_id.username
+        return "Музыкальный редактор %s %s" % (self.user_id.first_name, self.user_id.last_name)
 
 
 class Manager(models.Model):
-    staff_code = models.CharField(max_length=20, blank=True)
+    staff_code = models.CharField(max_length=20, blank=True, verbose_name="Номер сотрудника")
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    class Meta:
+        verbose_name = "организатора"
+        verbose_name_plural = "организаторы"
+
     def __str__(self):
-        return "Manager extension for user#%s" % self.user_id.username
+        return "Организатор %s %s" % (self.user_id.first_name, self.user_id.last_name)
 
 
 class Request(models.Model):
     STATE_CHOICES = (('processing', 'В обработке'), ('confirmed', 'Подтверждена'))
-    date = models.DateTimeField()
-    state = models.CharField(max_length=20, choices=STATE_CHOICES)
-    music = models.TextField()
-    event = models.ForeignKey(Event, blank=True, on_delete=models.CASCADE, null=True)
+    date = models.DateTimeField(verbose_name='Дата начала')
+    state = models.CharField(max_length=20, choices=STATE_CHOICES, verbose_name='Статус')
+    music = models.TextField(verbose_name='Список музыки')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    class Meta:
+        verbose_name = "запрос"
+        verbose_name_plural = "запросы"
+
     def __str__(self):
-        return "Request for %s" % self.user.username
+        return "Запрос от %s на %s" % (self.user.first_name, self.date)
+
+
+class Event(models.Model):
+    date = models.DateTimeField(verbose_name="Дата начала")
+    songs = models.ManyToManyField(Song, verbose_name="Список музыкальных композиций")
+    host = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    request = models.ForeignKey(Request, on_delete=models.CASCADE, blank=True, null=True, verbose_name="Запрос")
+
+    class Meta:
+        verbose_name = "мероприятие"
+        verbose_name_plural = "мероприятия"
+
+    def __str__(self):
+        return "Мероприятие в %s" % self.date
