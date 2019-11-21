@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c63eaa5d-220d-4bdf-a2f4-43f990585d6b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/core/migrations/0012_auto_20191119_1800.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/migrations/0013_auto_20191119_1824.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db_kurs_website/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/db_kurs_website/settings.py" afterDir="false" />
-    </list>
+    <list default="true" id="c63eaa5d-220d-4bdf-a2f4-43f990585d6b" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,6 +9,11 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="Sergey Rakhmanov &lt;rakhmanov.sergey@gmail.com&gt;" />
+      </list>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1Te1Fe0o6cqtGgp0mbaaYq7440A" />
@@ -88,8 +86,16 @@
       <option name="presentableId" value="Default" />
       <updated>1573805644338</updated>
       <workItem from="1573805648011" duration="9714000" />
-      <workItem from="1574075709588" duration="25597000" />
+      <workItem from="1574075709588" duration="25646000" />
     </task>
+    <task id="LOCAL-00001" summary="Translations and lots of other stuff">
+      <created>1574193766177</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1574193766177</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -108,5 +114,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="Translations and lots of other stuff" />
+    <option name="LAST_COMMIT_MESSAGE" value="Translations and lots of other stuff" />
   </component>
 </project>
