@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django import forms
+from django.contrib.admin import SimpleListFilter
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import redirect
 
@@ -44,15 +45,6 @@ class SongAdmin(admin.ModelAdmin):
     list_display = ['name', 'artist', 'has_rights']
     search_fields = ['name', 'artist']
 
-    # def get_form(self, request, obj=None, **kwargs):
-    #     form = super().get_form(request, obj, **kwargs)
-    #     # if request.user.is_authenticated():
-    #     is_client = (request.user.type == "client")
-    #     if is_client:
-    #         form.base_fields['name'].disabled = True
-    #
-    #     return form
-
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
@@ -73,6 +65,9 @@ class EventAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         obj.host = request.user
+        request = Request.objects.get(pk=obj.request.id)
+        request.state = 'confirmed'
+        request.save()
         super().save_model(request, obj, form, change)
 
 
@@ -102,9 +97,6 @@ class UserAdmin(admin.ModelAdmin):
             return redirect('/core/editor/add/?user_id=%s' % obj.id)
         elif obj.type == 'manager':
             return redirect('/core/manager/add/?user_id=%s' % obj.id)
-
-    # def response_change(self, request, obj):
-    #     return redirect('/admin/sales/invoice')
 
 
 @admin.register(Client)
@@ -145,7 +137,6 @@ class ClientAdmin(admin.ModelAdmin):
 class EditorAdmin(admin.ModelAdmin):
     model = Editor
     list_display = ['get_first_name', 'get_last_name', 'get_email', 'get_username', 'staff_code']
-    # list_filter = ('user_id__first_name', 'user_id__last_name', 'user_id__email', 'staff_code')
     search_fields = ['staff_code']
 
     def get_first_name(self, obj):
@@ -179,7 +170,6 @@ class EditorAdmin(admin.ModelAdmin):
 class ManagerAdmin(admin.ModelAdmin):
     model = Manager
     list_display = ['get_first_name', 'get_last_name', 'get_email', 'get_username', 'staff_code']
-    # list_filter = ('user_id__first_name', 'user_id__last_name', 'user_id__email', 'staff_code')
     search_fields = ['staff_code']
 
     def get_first_name(self, obj):
@@ -211,10 +201,34 @@ class ManagerAdmin(admin.ModelAdmin):
 
 @admin.register(Request)
 class RequestAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['get_first_name', 'date', 'state']
+
+    def get_first_name(self, obj):
+        return obj.user.first_name
+    get_first_name.admin_order_field = 'имя'
+    get_first_name.short_description = 'Имя'
+
+    fieldsets = (
+        (None, {'fields': ('date', 'music')}),
+        (None, {'fields': ('state', 'user'), 'classes': ('hidden',)}),
+    )
+
+    def save_model(self, request, obj, form, change):
+        obj.user = request.user
+        obj.state = 'processing'
+        super().save_model(request, obj, form, change)
+
+    def get_queryset(self, request):
+        qs = super(RequestAdmin, self).get_queryset(request)
+        if request.user.type == 'client':
+            return qs.filter(user=request.user)
+        return qs
 
 
 @admin.register(SongRights)
 class SongRightsAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['name', 'artist', 'status']
+    list_filter = ('status',)
+    search_fields = ['name', 'artist']
+
 

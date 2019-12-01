@@ -49,7 +49,7 @@ class SongRights(models.Model):
     name = models.CharField(max_length=20, verbose_name="Название")
     artist = models.CharField(max_length=20, verbose_name="Исполнитель")
     organization = models.CharField(max_length=50, verbose_name="Организация")
-    status = models.CharField(max_length=20, choices=SONG_RIGHTS_CHOICES)
+    status = models.CharField(max_length=20, choices=SONG_RIGHTS_CHOICES, verbose_name="Статус")
 
     class Meta:
         verbose_name = "права на композицию"
@@ -61,8 +61,8 @@ class SongRights(models.Model):
 
 class Client(models.Model):
     number = models.CharField(max_length=20, blank=True, verbose_name="номер телефона")
-    card_number = models.CharField(max_length=50, blank=True)
-    address = models.TextField(blank=True)
+    card_number = models.CharField(max_length=50, blank=True, verbose_name="номер карты")
+    address = models.TextField(blank=True, verbose_name="адрес")
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
@@ -74,7 +74,7 @@ class Client(models.Model):
 
 
 class Editor(models.Model):
-    staff_code = models.CharField(max_length=20, blank=True)
+    staff_code = models.CharField(max_length=20, blank=True, verbose_name="номер сотрудника")
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
@@ -100,9 +100,9 @@ class Manager(models.Model):
 class Request(models.Model):
     STATE_CHOICES = (('processing', 'В обработке'), ('confirmed', 'Подтверждена'))
     date = models.DateTimeField(verbose_name='Дата начала')
-    state = models.CharField(max_length=20, choices=STATE_CHOICES, verbose_name='Статус')
+    state = models.CharField(max_length=20, choices=STATE_CHOICES, verbose_name='Статус', blank=True, null=True)
     music = models.TextField(verbose_name='Список музыки')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
 
     class Meta:
         verbose_name = "запрос"

@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c63eaa5d-220d-4bdf-a2f4-43f990585d6b" name="Default Changelist" comment="" />
+    <list default="true" id="c63eaa5d-220d-4bdf-a2f4-43f990585d6b" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/models.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,6 +91,8 @@
       <updated>1573805644338</updated>
       <workItem from="1573805648011" duration="9714000" />
       <workItem from="1574075709588" duration="25646000" />
+      <workItem from="1574963146966" duration="1068000" />
+      <workItem from="1575221552560" duration="5596000" />
     </task>
     <task id="LOCAL-00001" summary="Translations and lots of other stuff">
       <created>1574193766177</created>
@@ -106,7 +112,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
